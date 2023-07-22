@@ -1,7 +1,4 @@
 .list {
-  padding: 20px;
-}
-
-.item {
-  margin-bottom: 5px;
+  padding: 0;
+  min-height: 300px;
 }

@@ -1,39 +1,41 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import ContactList from '../ContactList/ContactList';
+import styles from './FilterContacts.module.css';
 
-class FilterContacts extends Component {
-  state = {
-    filter: '',
-  };
+const FilterContacts = ({ contacts, deleteContact }) => {
+  const [filter, setFilter] = useState('');
 
-  handleFilterChange = event => {
-    this.setState({ filter: event.target.value });
-  };
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
 
-  getFilteredContacts = () => {
-    const { contacts } = this.props;
-    const { filter } = this.state;
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
-    );
-  };
-
-  render() {
-    const filteredContacts = this.getFilteredContacts();
-
-    return (
-      <div>
-        <p>Find contact by name</p>
+  return (
+    <div className={styles.container}>
+      <div className={styles.filterContainer}>
+        <p className={styles.filterText}>Find contact by name</p>
         <input
+          className={styles.filterInput}
           type="text"
-          value={this.state.filter}
-          onChange={this.handleFilterChange}
+          value={filter}
+          onChange={event => setFilter(event.target.value)}
           placeholder="Find contact by name"
         />
-        <ContactList contacts={filteredContacts} />
       </div>
-    );
-  }
-}
+      <ContactList contacts={filteredContacts} onDelete={deleteContact} />
+    </div>
+  );
+};
+
+FilterContacts.propTypes = {
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  deleteContact: PropTypes.func.isRequired,
+};
 
 export default FilterContacts;

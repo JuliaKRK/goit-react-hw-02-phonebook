@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 import ContactForm from './ContactForm/ContactForm';
 import FilterContacts from './FilterContacts/FilterContacts';
-// import ContactList from './ContactList/ContactList';
+import styles from './App.module.css';
 
 class App extends Component {
   state = {
@@ -12,29 +13,69 @@ class App extends Component {
       { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
+    filter: '',
   };
 
   addContact = (name, number) => {
-    const newContact = {
-      id: nanoid(),
-      name: name,
-      number: number,
-    };
+    // Перевірка, чи існує контакт з таким самим іменем
+    const existingContact = this.state.contacts.find(
+      contact => contact.name === name
+    );
+
+    if (existingContact) {
+      alert(`Contact with name ${name} is already in contacts.`);
+    } else {
+      const newContact = {
+        id: nanoid(),
+        name: name,
+        number: number,
+      };
+      this.setState(prevState => ({
+        contacts: [...prevState.contacts, newContact],
+      }));
+    }
+  };
+
+  deleteContact = id => {
     this.setState(prevState => ({
-      contacts: [...prevState.contacts, newContact],
+      contacts: prevState.contacts.filter(contact => contact.id !== id),
     }));
+  };
+
+  handleFilterChange = event => {
+    this.setState({ filter: event.target.value });
+  };
+
+  getFilteredContacts = () => {
+    const { contacts, filter } = this.state;
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
   };
 
   render() {
     return (
-      <div className="App">
+      <div className={styles.container}>
         <h1>Phonebook</h1>
         <ContactForm addContact={this.addContact} />
         <h2>Contacts</h2>
-        <FilterContacts contacts={this.state.contacts} />
+        <FilterContacts
+          contacts={this.state.contacts}
+          deleteContact={this.deleteContact}
+        />
       </div>
     );
   }
 }
+
+App.propTypes = {
+  contacts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      number: PropTypes.string.isRequired,
+    })
+  ),
+};
 
 export default App;

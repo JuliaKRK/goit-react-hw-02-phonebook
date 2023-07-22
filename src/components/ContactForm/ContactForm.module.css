@@ -1,5 +1,5 @@
 .formContainer {
-  border: 1px solid #ccc;
+  border: 2px solid #185728;
   padding: 20px;
   border-radius: 5px;
   width: 300px;
@@ -21,5 +21,17 @@
 }
 
 .button {
-  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s; /* Додамо плавний перехід для зміни кольору фону */
+}
+
+/* Hover стиль - коли курсор наводиться на кнопку */
+.button:hover {
+  background-color: #126b16; /* Змінюємо колір фону при hover */
 }
