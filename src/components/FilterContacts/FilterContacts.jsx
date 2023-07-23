@@ -1,31 +1,45 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ContactList from '../ContactList/ContactList';
 import styles from './FilterContacts.module.css';
 
-const FilterContacts = ({ contacts, deleteContact }) => {
-  const [filter, setFilter] = useState('');
+class FilterContacts extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      filter: '',
+    };
+  }
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  handleFilterChange = event => {
+    this.setState({ filter: event.target.value });
+  };
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.filterContainer}>
-        <p className={styles.filterText}>Find contact by name</p>
-        <input
-          className={styles.filterInput}
-          type="text"
-          value={filter}
-          onChange={event => setFilter(event.target.value)}
-          placeholder="Find contact by name"
-        />
+  render() {
+    const { contacts, deleteContact } = this.props;
+    const { filter } = this.state;
+
+    const filteredContacts = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+
+    return (
+      <div className={styles.container}>
+        <div className={styles.filterContainer}>
+          <p className={styles.filterText}>Find contact by name</p>
+          <input
+            className={styles.filterInput}
+            type="text"
+            value={filter}
+            onChange={this.handleFilterChange}
+            placeholder="Find contact by name"
+          />
+        </div>
+        <ContactList contacts={filteredContacts} onDelete={deleteContact} />
       </div>
-      <ContactList contacts={filteredContacts} onDelete={deleteContact} />
-    </div>
-  );
-};
+    );
+  }
+}
 
 FilterContacts.propTypes = {
   contacts: PropTypes.arrayOf(
